@@ -6,14 +6,17 @@ import connectDB from "./database/connect.js";
 import cookieParser from "cookie-parser";
 import checkForAuthenticationCookie from "./middlewares/authentication.js";
 import Blog from "./models/blog.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 const app = express();
 
-connectDB("mongodb://127.0.0.1:27017/blogify");
+connectDB(process.env.MONGO_URL);
 
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
