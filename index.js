@@ -1,9 +1,11 @@
 import express from "express";
 import path from "path";
 import userRoute from "./routes/user.js";
+import blogRoute from "./routes/blog.js";
 import connectDB from "./database/connect.js";
 import cookieParser from "cookie-parser";
 import checkForAuthenticationCookie from "./middlewares/authentication.js";
+import Blog from "./models/blog.js";
 
 const PORT = 8000;
 const app = express();
@@ -15,12 +17,16 @@ app.set("views", path.resolve("./views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(checkForAuthenticationCookie("token"));
+app.use(express.static(path.resolve("./public")));
 
 app.use("/user", userRoute);
+app.use("/blog", blogRoute);
 
-app.get("/", (req, res) => {
-    res.render("home",{
-        user: req.user
+app.get("/", async (req, res) => {
+    const allBlogs = await Blog.find({}).sort({ createdAt: -1 });
+    res.render("home", {
+        user: req.user,
+        blogs: allBlogs
     });
 })
 

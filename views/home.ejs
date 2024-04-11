@@ -9,9 +9,23 @@
 <body>
     <%- include('./partials/nav') %>
         <div class="container mt-4">
-          <%= JSON.stringify(user) %>
+            <div class="row cols-4">
+                <% blogs.forEach(element=> { %>
+                    <div class="col">
+                        <div class="card" style="width: 18rem;">
+                            <img src="<%= element.coverImageURL %>" class="card-img-top" alt="coverImage">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= element.title %>
+                                </h5>
+                                <a href="/blog/<%= element._id %>" class="btn btn-primary">Read</a>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
         </div>
-    <%- include('./partials/scripts') %>
+        <%- include('./partials/scripts') %>
 </body>
 
 </html>
