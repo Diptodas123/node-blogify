@@ -12,14 +12,13 @@ router.route("/login")
         const { email, password } = req.body;
 
         try {
-            const user = await User.matchPassword(email, password);
-            console.log(user);
-        } catch (err) {
-            console.log(err);
-            res.redirect("/user/login");
+            const token = await User.matchPasswordAndGenerateToken(email, password);
+            res.cookie("token", token);
+            res.redirect("/");
+        } catch (error) {
+            res.locals.error = error.message;
+            return res.status(401).render("login");
         }
-
-        return res.redirect("/");
     });
 
 router.route("/signup")
@@ -32,5 +31,10 @@ router.route("/signup")
         await User.create({ fullName, email, password });
         res.redirect("/user/login");
     });
+
+router.get("/logout", (req, res) => {
+    res.clearCookie("token");
+    res.redirect("/user/login");
+});
 
 export default router;
